@@ -221,7 +221,7 @@ void execute_cgi(int client, const char *path,
 		}
 		execl(path, NULL);
 		exit(0);
-	}else{ /* parent * /
+	}else{ /* parent */
 		close(cgi_output[1]);
 		close(cgi_input[0]);
 		if (strcasecmp(method, "POST") == 0)
