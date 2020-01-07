@@ -4,7 +4,7 @@
 #include<netinet/in.h>  //net address socketaddr_in htons
 #include<arpa/inet.h>   //definitions for internet operations htonl/s ntohl/s
 #include<unistd.h>     //fork() pipe()
-#include<ctype.h>     //isspace
+#include<ctype.h>     //isspace  my name is daly
 #include<strings.h>
 #include<string.h>
 #include<sys/stat.h>   
@@ -186,7 +186,8 @@ int startup(u_short *port)
 	if(*port == 0)
 	{
 		socklen_t namelen = sizeof(name);
-		if(getsockname(httpd, (struct sockaddr *)&name, &namelen) == -1)			error_die("getsockname");
+		if(getsockname(httpd, (struct sockaddr *)&name, &namelen) == -1)
+		error_die("getsockname");
 		*port = ntohs(name.sin_port);
  	if(listen(httpd, 5)<0)
 		error_die("listen");
