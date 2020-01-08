@@ -106,6 +106,12 @@ void accept_request(void *arg)
 			cgi = 1;
 		if (!cgi)
 			serve_file(client, path);
+		else
+			execute_cgi(client, path, method, query_string);
+	}
+
+	close(client);
+}
 
 void bad_request(int client)
 {
@@ -272,7 +278,17 @@ int get_line(int sock, char *buf, int size)
 void headers(int client, const char *filename)
 {
 	char buf[1024];
-	(void)filename; 
+	(void)filename;  /* could use filename to determine file type */
+
+	sprintf(buf, "HTTP/1.0 200 OK\r\n");
+	send(client, buf, strlen(buf), 0);
+	sprintf(buf, SEVER_STRING);
+	send(client, buf, strlen(buf), 0);
+	sprintf(buf, "Content-Type: text/html\r\n");
+	send(client, buf, strlen(buf), 0);
+	strcpy(buf, "\r\n");
+	send(client, buf, strlen(buf), 0);
+}
 
 void not_found(int client)
 {
@@ -394,6 +410,17 @@ int main(void)
 		client_sock = accept(server_sock, 
 				    (struct sockaddr *)&client_name,
 				    &client_name_len);
+		if (client_sock == -1)
+				error_die("accept");
+		/* accept_request(&client_sock); */
+		if (pthread_create(&newthread, NULL, (void*)accept_request, (void*)(intptr_t)client_sock)!=0)
+		perror("pthread_create");
+	}
+	
+	close(server_sock);
+
+	return(0);
+}
 		
 
 
